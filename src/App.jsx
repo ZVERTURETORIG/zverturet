@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
+  CalendarDays,
   Check,
   Clock3,
   Film,
@@ -198,6 +199,74 @@ const movies = [
   },
 ];
 
+const upcomingMovies = [
+  {
+    id: 'violent-night-2', title: 'Жестокая ночь 2', original: 'Violent Night 2', year: 2026, release: '4 декабря 2026', genre: 'Боевик', accent: '#a13732',
+    poster: 'https://m.media-amazon.com/images/M/MV5BOTZhNDFmYmUtY2FmNy00MzMxLWI5NDEtNjJmYjdkNjliOWUyXkEyXkFqcGc%40._V1_FMjpg_UX1000_.jpg',
+  },
+  {
+    id: 'dune-3', title: 'Дюна: Часть третья', original: 'Dune: Part Three', year: 2026, release: '18 декабря 2026', genre: 'Фантастика', accent: '#c88745',
+    poster: 'https://images.ctfassets.net/c4ucztjx9pmu/5GKRRV43QjQtzHI8ScLPKg/f88bb5d8ae463cc052e68e2623a4c9ce/DUNE3_CHARACTER_TIMOTHEE_1080x1600px_V01.jpg',
+  },
+  {
+    id: 'avengers-doomsday', title: 'Мстители: Судный день', original: 'Avengers: Doomsday', year: 2026, release: '18 декабря 2026', genre: 'Фантастика', accent: '#476354',
+  },
+  {
+    id: 'angry-birds-3', title: 'Angry Birds в кино 3', original: 'The Angry Birds Movie 3', year: 2026, release: '23 декабря 2026', genre: 'Анимация', accent: '#df684b',
+    poster: 'https://image.tmdb.org/t/p/w500/yMWtxGZxeLlbAZSTFqQxYKDH8b4.jpg',
+  },
+  {
+    id: 'children-of-blood-and-bone', title: 'Дети крови и костей', original: 'Children of Blood and Bone', year: 2027, release: '15 января 2027', genre: 'Фэнтези', accent: '#7554a7',
+    poster: 'https://m.media-amazon.com/images/M/MV5BNWE1MTlkZDktMGEyZS00NGYwLWE5YzctMTYyNmVhZTNlMjkyXkEyXkFqcGc%40._V1_.jpg',
+  },
+  {
+    id: 'gatto', title: 'Гатто', original: 'Gatto', year: 2027, release: '5 марта 2027', genre: 'Анимация', accent: '#545c81',
+    poster: 'https://images.squarespace-cdn.com/content/v1/60241cb68df65b530cd84d95/955ebed0-40a5-492d-9e36-32c2a60d3cd2/Gatto_Teaser_Poster.jpg?format=1200w',
+  },
+  {
+    id: 'exorcist-martyrs', title: 'Экзорцист: Мученики', original: 'The Exorcist: Martyrs', year: 2027, release: '12 марта 2027', genre: 'Ужасы', accent: '#6d393b',
+  },
+  {
+    id: 'sonic-4', title: 'Соник 4 в кино', original: 'Sonic the Hedgehog 4', year: 2027, release: '19 марта 2027', genre: 'Приключения', accent: '#3d78c4',
+  },
+  {
+    id: 'godzilla-kong-supernova', title: 'Годзилла и Конг: Супернова', original: 'Godzilla x Kong: Supernova', year: 2027, release: 'Март 2027', genre: 'Фантастика', accent: '#58635a',
+  },
+  {
+    id: 'zelda', title: 'Легенда о Зельде', original: 'The Legend of Zelda', year: 2027, release: '30 апреля 2027', genre: 'Приключения', accent: '#9c7e3b',
+  },
+  {
+    id: 'star-wars-starfighter', title: 'Звёздные войны: Старфайтер', original: 'Star Wars: Starfighter', year: 2027, release: '28 мая 2027', genre: 'Фантастика', accent: '#526583',
+  },
+  {
+    id: 'how-to-train-your-dragon-2', title: 'Как приручить дракона 2', original: 'How to Train Your Dragon 2', year: 2027, release: '11 июня 2027', genre: 'Приключения', accent: '#47858a',
+  },
+  {
+    id: 'shrek-5', title: 'Шрек 5', original: 'Shrek 5', year: 2027, release: 'Июнь 2027', genre: 'Анимация', accent: '#657c39',
+  },
+  {
+    id: 'spider-man-beyond', title: 'Человек-паук: За пределами вселенных', original: 'Spider-Man: Beyond the Spider-Verse', year: 2027, release: '18 июня 2027', genre: 'Анимация', accent: '#98485e',
+  },
+  {
+    id: 'man-of-tomorrow', title: 'Человек завтрашнего дня', original: 'Man of Tomorrow', year: 2027, release: '9 июля 2027', genre: 'Фантастика', accent: '#4883a7',
+  },
+  {
+    id: 'minecraft-2', title: 'Minecraft 2', original: 'A Minecraft Movie 2', year: 2027, release: '23 июля 2027', genre: 'Приключения', accent: '#678354',
+  },
+  {
+    id: 'simpsons-movie-2', title: 'Новый фильм «Симпсоны»', original: 'The Simpsons Movie (2027)', year: 2027, release: '3 сентября 2027', genre: 'Комедия', accent: '#d9a93c',
+  },
+  {
+    id: 'frozen-3', title: 'Холодное сердце 3', original: 'Frozen 3', year: 2027, release: '24 ноября 2027', genre: 'Анимация', accent: '#668ea8',
+  },
+  {
+    id: 'avengers-secret-wars', title: 'Мстители: Секретные войны', original: 'Avengers: Secret Wars', year: 2027, release: '17 декабря 2027', genre: 'Фантастика', accent: '#8a5148',
+  },
+  {
+    id: 'hunt-for-gollum', title: 'Властелин колец: Охота на Голлума', original: 'The Lord of the Rings: The Hunt for Gollum', year: 2027, release: 'Декабрь 2027', genre: 'Фэнтези', accent: '#867548',
+  },
+];
+
 const categories = ['Все', ...new Set(movies.map((movie) => movie.genre))];
 const trailerVideos = {
   'dune-2': 'Way9Dexny3w',
@@ -266,6 +335,7 @@ function App() {
   });
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [category, setCategory] = useState('Все');
+  const [upcomingYear, setUpcomingYear] = useState('Все');
   const [query, setQuery] = useState('');
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -308,14 +378,18 @@ function App() {
   }, [settingsOpen]);
 
   const visibleMovies = useMemo(() => {
-    const source = activeTab === 'saved' ? movies.filter((movie) => saved.includes(movie.id)) : movies;
+    const source = activeTab === 'saved'
+      ? movies.filter((movie) => saved.includes(movie.id))
+      : activeTab === 'upcoming' ? upcomingMovies : movies;
     const search = query.trim().toLocaleLowerCase('ru');
     return source.filter((movie) => {
-      const categoryMatch = category === 'Все' || movie.genre === category;
-      const searchable = `${movie.title} ${movie.original} ${movie.director} ${movie.genre}`.toLocaleLowerCase('ru');
+      const categoryMatch = activeTab === 'upcoming'
+        ? upcomingYear === 'Все' || String(movie.year) === upcomingYear
+        : category === 'Все' || movie.genre === category;
+      const searchable = `${movie.title} ${movie.original} ${movie.director || ''} ${movie.genre}`.toLocaleLowerCase('ru');
       return categoryMatch && (!search || searchable.includes(search));
     });
-  }, [activeTab, category, query, saved]);
+  }, [activeTab, category, query, saved, upcomingYear]);
 
   function toggleSaved(movieId) {
     setSaved((current) => current.includes(movieId)
@@ -350,7 +424,7 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const sectionTitle = activeTab === 'saved' ? 'Избранное' : activeTab === 'tickets' ? 'Билеты' : 'Фильмы';
+  const sectionTitle = activeTab === 'saved' ? 'Избранное' : activeTab === 'tickets' ? 'Билеты' : activeTab === 'upcoming' ? 'Скоро в кино' : 'Фильмы';
 
   return (
     <div className="app-shell" id="top" data-theme={theme}>
@@ -391,15 +465,21 @@ function App() {
           </div>
 
           {activeTab !== 'tickets' && <div className="filter-row">
-            <div className="filters" role="group" aria-label="Жанр">
+            {activeTab === 'upcoming' ? <div className="filters" role="group" aria-label="Год премьеры">
+              {['Все', '2026', '2027'].map((year) => <button key={year} className={upcomingYear === year ? 'filter-chip is-selected' : 'filter-chip'} onClick={() => setUpcomingYear(year)}>{year}</button>)}
+            </div> : <div className="filters" role="group" aria-label="Жанр">
               {categories.map((item) => <button key={item} className={category === item ? 'filter-chip is-selected' : 'filter-chip'} onClick={() => setCategory(item)}>{item}</button>)}
-            </div>
+            </div>}
             <span className="result-count">{visibleMovies.length} фильмов</span>
           </div>}
 
+          {activeTab === 'upcoming' && <p className="upcoming-intro">Премьеры конца 2026 и 2027 года. Даты могут отличаться по странам и меняться.</p>}
+
           {activeTab === 'tickets' ? <TicketList bookings={bookings} onRemove={removeBooking} onBrowse={openCatalog} /> :
             visibleMovies.length > 0 ? <div className="movie-grid">
-              {visibleMovies.map((movie) => <MovieCard key={movie.id} movie={movie} saved={saved.includes(movie.id)} onToggleSave={toggleSaved} onOpen={() => setSelectedMovie(movie)} />)}
+              {visibleMovies.map((movie) => activeTab === 'upcoming'
+                ? <UpcomingCard key={movie.id} movie={movie} />
+                : <MovieCard key={movie.id} movie={movie} saved={saved.includes(movie.id)} onToggleSave={toggleSaved} onOpen={() => setSelectedMovie(movie)} />)}
             </div> : <EmptyState savedOnly={activeTab === 'saved'} clearSearch={() => { setQuery(''); setCategory('Все'); }} onBrowse={openCatalog} />}
         </section>
       </main>
@@ -412,6 +492,9 @@ function App() {
       <nav className="bottom-nav" aria-label="Основная навигация">
         <button className={activeTab === 'catalog' ? 'bottom-nav__button is-active' : 'bottom-nav__button'} onClick={openCatalog} aria-current={activeTab === 'catalog' ? 'page' : undefined}>
           <Film size={17} /><span>Фильмы</span>
+        </button>
+        <button className={activeTab === 'upcoming' ? 'bottom-nav__button is-active' : 'bottom-nav__button'} onClick={() => openTab('upcoming')} aria-current={activeTab === 'upcoming' ? 'page' : undefined}>
+          <CalendarDays size={17} /><span>Скоро</span><small>{upcomingMovies.length}</small>
         </button>
         <button className={activeTab === 'saved' ? 'bottom-nav__button is-active' : 'bottom-nav__button'} onClick={() => openTab('saved')} aria-current={activeTab === 'saved' ? 'page' : undefined}>
           <Heart size={17} /><span>Избранное</span><small>{saved.length}</small>
@@ -456,6 +539,25 @@ function MovieCard({ movie, saved, onToggleSave, onOpen }) {
       <div className="movie-card__topline"><span>{movie.genre}</span><span>{movie.year}</span></div>
       <h2>{movie.title}</h2>
       <div className="movie-card__bottom">{movie.runtime && <span><Clock3 size={13} /> {movie.runtime} мин</span>}<button onClick={onOpen}>Сеансы <ArrowRight size={14} /></button></div>
+    </div>
+  </article>;
+}
+
+function UpcomingCard({ movie }) {
+  return <article className="upcoming-card">
+    <div className="upcoming-card__poster" style={{ '--poster-accent': movie.accent }}>
+      {movie.poster
+        ? <img src={movie.poster} alt={`Постер фильма ${movie.title}`} loading="lazy" />
+        : <div className="upcoming-card__placeholder" aria-label={`Постер фильма ${movie.title} ещё не вышел`}>
+          <span>СКОРО В КИНО</span>
+          <strong>{movie.original}</strong>
+          <small>{movie.year}</small>
+        </div>}
+      <span className="upcoming-card__date">{movie.release}</span>
+    </div>
+    <div className="upcoming-card__info">
+      <div className="movie-card__topline"><span>{movie.genre}</span><span>{movie.year}</span></div>
+      <h2>{movie.title}</h2>
     </div>
   </article>;
 }
