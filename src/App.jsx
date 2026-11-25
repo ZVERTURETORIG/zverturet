@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import mark from './assets/zverturet-mark.png';
 
-const image = (path, size = 'w500') => `https://image.tmdb.org/t/p/${size}${path}`;
+const image = (path, size = 'w500') => path.startsWith('http') ? path : `https://image.tmdb.org/t/p/${size}${path}`;
 
 const movies = [
   {
@@ -24,6 +24,42 @@ const movies = [
     rating: '8.4', genre: 'Фантастика', director: 'Дени Вильнёв', poster: '/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg',
     backdrop: '/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg',
     description: 'Пол Атрейдес объединяется с Чани и фременами. Их путь меняет судьбу планеты',
+  },
+  {
+    id: 'project-hail-mary', title: 'Проект «Аве Мария»', original: 'Project Hail Mary', year: 2026, runtime: null,
+    rating: null, genre: 'Фантастика', director: 'Фил Лорд и Кристофер Миллер',
+    poster: 'https://m.media-amazon.com/images/M/MV5BNTkwNzJiYTctNzI3NC00NjE1LTlhYjktY2Q5MTdmMWFmNzcxXkEyXkFqcGc%40._V1_QL75_UX5530_.jpg',
+    trailer: 'P0XN3-n-2Lo', description: 'Учитель Райланд Грейс просыпается один на космическом корабле и пытается найти способ спасти Землю.',
+  },
+  {
+    id: 'the-odyssey', title: 'Одиссея', original: 'The Odyssey', year: 2026, runtime: null,
+    rating: null, genre: 'Приключения', director: 'Кристофер Нолан',
+    poster: 'https://dx35vtwkllhj9.cloudfront.net/universalstudios/the-odyssey/images/regions/ca/onesheet.jpg',
+    trailer: 'f_bKjZeJBBI', description: 'После Троянской войны Одиссей отправляется домой и проходит испытания мифического мира.',
+  },
+  {
+    id: 'toy-story-5', title: 'История игрушек 5', original: 'Toy Story 5', year: 2026, runtime: null,
+    rating: null, genre: 'Анимация', director: 'Эндрю Стэнтон и Кенна Харрис',
+    poster: 'https://imgix.hoyts.com.au/mx/posters/au/toy-story-5-5bd649fe.jpg',
+    trailer: 'c51ND9Hdbw0', description: 'Игрушкам предстоит столкнуться с новым соперником — умным планшетом Лилипад.',
+  },
+  {
+    id: 'scream-7', title: 'Крик 7', original: 'Scream 7', year: 2026, runtime: null,
+    rating: null, genre: 'Ужасы', director: 'Кевин Уильямсон',
+    poster: 'https://images.squarespace-cdn.com/content/v1/61d3a1dc960d41134f8ac264/12e4a8a2-ebbd-4a5c-8d3a-2e37e4997722/scream-7-movie-poster-2026.jpg',
+    trailer: 'UJrghaPJ0RY', description: 'Новый убийца в маске Призрачного лица угрожает Сидни Прескотт и её семье.',
+  },
+  {
+    id: 'mortal-kombat-2', title: 'Мортал Комбат 2', original: 'Mortal Kombat II', year: 2026, runtime: null,
+    rating: null, genre: 'Боевик', director: 'Саймон Маккуойд',
+    poster: 'https://images.flickdirect.com/movies/mortal-kombat-2/mortal-kombat-2-poster.jpg',
+    trailer: 'b24oG7qCwp4', description: 'Чемпионы Земного царства сражаются с Шао Каном, чтобы остановить его тёмное правление.',
+  },
+  {
+    id: 'super-mario-galaxy', title: 'Супер Марио: Галактическое кино', original: 'The Super Mario Galaxy Movie', year: 2026, runtime: null,
+    rating: null, genre: 'Анимация', director: 'Аарон Хорват и Майкл Еленик',
+    poster: 'https://mario.wiki.gallery/images/0/06/TSMGM_Poster.jpg',
+    trailer: 'LX9kXRRJlPw', description: 'Марио и Луиджи отправляются в космическое приключение, чтобы спасти Розалину.',
   },
   {
     id: 'past-lives', title: 'Прошлые жизни', original: 'Past Lives', year: 2023, runtime: 106,
@@ -163,6 +199,36 @@ const movies = [
 ];
 
 const categories = ['Все', ...new Set(movies.map((movie) => movie.genre))];
+const trailerVideos = {
+  'dune-2': 'Way9Dexny3w',
+  'past-lives': 'kA244xewjcI',
+  'poor-things': 'RlbR5N6veqw',
+  interstellar: 'zSWdZVtXT7E',
+  'grand-budapest': '1Fg5iWmQjwk',
+  parasite: '5xH0HfJHsaY',
+  challengers: 'VobTTbg-te0',
+  flow: '82WW9dVbglI',
+  oppenheimer: 'bK6ldnjE3Y0',
+  arrival: 'tFMo3UJ4B4g',
+  joker: 'zAGVQLHvwOY',
+  'the-batman': 'mqqft2x_Aa4',
+  'spider-verse': 'cqGjhVJWtEg',
+  whiplash: '7d_jQycdQGo',
+  matrix: 'm8e-FF8MsqU',
+  'everything-everywhere': 'wxN1T1uxQ2g',
+  inception: 'YoHD9XEInc0',
+  'la-la-land': '0pdqf4P9MB8',
+  'spirited-away': 'fDUFP7EeXLE',
+  shawshank: '6hB3S9bIaco',
+  'knives-out': 'qGqiHJTsRkQ',
+  coco: 'Rvr68u6k5sI',
+  'mad-max': 'hEJnMQG9ev8',
+  'social-network': 'lB95KLmpLR4',
+  'the-menu': 'C_uTkUGcHv4',
+  'eternal-sunshine': 'yE-f1alkq9I',
+  'kill-bill': 'ot6C1ZKyiME',
+  amelie: '2UT5xaAfxWU',
+};
 const sessions = [
   { time: '16:40', room: 'Зал 1' },
   { time: '19:20', room: 'Зал 2' },
@@ -380,7 +446,7 @@ function MovieCard({ movie, saved, onToggleSave, onOpen }) {
     <div className="movie-card__visual">
       <button className="movie-card__poster-trigger" onClick={onOpen} aria-label={`Подробнее о фильме ${movie.title}`}>
         <img src={image(movie.poster)} alt={`Постер ${movie.title}`} loading="lazy" />
-        <span className="movie-card__rating"><Star size={12} fill="currentColor" /> {movie.rating}</span>
+        {movie.rating && <span className="movie-card__rating"><Star size={12} fill="currentColor" /> {movie.rating}</span>}
       </button>
       <button className={saved ? 'save-button is-saved' : 'save-button'} onClick={() => onToggleSave(movie.id)} aria-label={saved ? 'Убрать из избранного' : 'Добавить в избранное'}>
         <Heart size={18} fill={saved ? 'currentColor' : 'none'} />
@@ -389,7 +455,7 @@ function MovieCard({ movie, saved, onToggleSave, onOpen }) {
     <div className="movie-card__info">
       <div className="movie-card__topline"><span>{movie.genre}</span><span>{movie.year}</span></div>
       <h2>{movie.title}</h2>
-      <div className="movie-card__bottom"><span><Clock3 size={13} /> {movie.runtime} мин</span><button onClick={onOpen}>Сеансы <ArrowRight size={14} /></button></div>
+      <div className="movie-card__bottom">{movie.runtime && <span><Clock3 size={13} /> {movie.runtime} мин</span>}<button onClick={onOpen}>Сеансы <ArrowRight size={14} /></button></div>
     </div>
   </article>;
 }
@@ -399,6 +465,7 @@ function MovieDialog({ movie, saved, onToggleSave, onClose, onConfirm }) {
   const [session, setSession] = useState(sessions[1]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [error, setError] = useState('');
+  const trailerId = movie.trailer || trailerVideos[movie.id];
 
   useEffect(() => {
     function onKeyDown(event) {
@@ -434,12 +501,12 @@ function MovieDialog({ movie, saved, onToggleSave, onClose, onConfirm }) {
   }
 
   return <div className={`dialog-backdrop ${stage === 'booking' ? 'dialog-backdrop--booking' : ''}`} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <section className={`dialog ${stage === 'booking' ? 'dialog--booking' : ''}`} role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <section className={`dialog ${stage === 'booking' ? 'dialog--booking' : ''} ${stage === 'details' && trailerId ? 'dialog--with-trailer' : ''}`} role="dialog" aria-modal="true" aria-labelledby="dialog-title">
       <button className="dialog__close" onClick={onClose} aria-label="Закрыть"><X size={18} /></button>
       {stage === 'details' ? <>
-        <div className="dialog__poster"><img src={image(movie.poster)} alt={`Постер ${movie.title}`} /></div>
+        {trailerId ? <div className="dialog__trailer"><iframe src={`https://www.youtube-nocookie.com/embed/${trailerId}?autoplay=1&mute=1&rel=0&playsinline=1`} title={`Трейлер: ${movie.title}`} allow="autoplay; encrypted-media; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /></div> : <div className="dialog__poster"><img src={image(movie.poster)} alt={`Постер ${movie.title}`} /></div>}
         <div className="dialog__body">
-          <div className="dialog__facts"><span>{movie.genre}</span><span>{movie.year}</span><span>{movie.runtime} мин</span><span><Star size={13} fill="currentColor" /> {movie.rating}</span></div>
+          <div className="dialog__facts"><span>{movie.genre}</span><span>{movie.year}</span>{movie.runtime && <span>{movie.runtime} мин</span>}{movie.rating && <span><Star size={13} fill="currentColor" /> {movie.rating}</span>}</div>
           <h2 id="dialog-title">{movie.title}</h2>
           <p className="dialog__original">{movie.original}</p>
           <p className="dialog__description">{movie.description}</p>
@@ -464,7 +531,7 @@ function BookingView({ movie, session, setSession, selectedSeats, toggleSeat, er
     <aside className="booking-sidebar">
       <span className="booking-label">Сеансы</span>
       <h2 id="dialog-title">{movie.title}</h2>
-      <div className="booking-meta"><span>{movie.year}</span><span>{movie.runtime} мин</span><span>{movie.genre}</span></div>
+      <div className="booking-meta"><span>{movie.year}</span>{movie.runtime && <span>{movie.runtime} мин</span>}<span>{movie.genre}</span></div>
       <div className="booking-section-label">Выберите время</div>
       <div className="session-options">
         {sessions.map((item) => <button key={item.time} onClick={() => setSession(item)} className={session.time === item.time ? 'session-chip is-active' : 'session-chip'}>
@@ -511,3 +578,4 @@ function EmptyState({ savedOnly, clearSearch, onBrowse }) {
 }
 
 export default App;
+
