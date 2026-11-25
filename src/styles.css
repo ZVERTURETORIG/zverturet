@@ -66,13 +66,30 @@ a { color: inherit; text-decoration: none; }
 .topbar__right { position: relative; display: flex; align-items: center; height: 76px; }
 .settings-button { width: 38px; height: 38px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--text); background: var(--panel); transition: background .2s ease, transform .2s ease, border-color .2s ease; }
 .settings-button:hover, .settings-button[aria-expanded="true"] { transform: rotate(12deg); border-color: var(--muted); background: var(--panel-raised); }
-.settings-popover { position: absolute; top: calc(100% - 5px); right: 0; z-index: 12; width: 230px; padding: 18px; border: 1px solid var(--line-strong); color: var(--text); background: var(--panel-raised); box-shadow: 0 18px 50px rgba(0,0,0,.32); animation: dialog-in .16s ease both; }
+.settings-popover { position: absolute; top: calc(100% - 5px); right: 0; z-index: 12; width: min(310px, calc(100vw - 36px)); max-height: calc(100dvh - 96px); overflow: auto; padding: 18px; border: 1px solid var(--line-strong); color: var(--text); background: var(--panel-raised); box-shadow: 0 18px 50px rgba(0,0,0,.32); animation: dialog-in .16s ease both; }
 .settings-popover h2 { margin: 0 0 18px; font-size: 14px; font-weight: 500; }
 .settings-label { display: block; margin-bottom: 9px; color: var(--muted); font-size: 10px; }
 .theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .theme-option { min-height: 37px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 8px; border: 1px solid var(--line); color: var(--muted); background: transparent; font-size: 10px; transition: color .18s ease, background .18s ease, border-color .18s ease; }
 .theme-option:hover { border-color: var(--line-strong); color: var(--text); }
 .theme-option.is-active { border-color: var(--button-bg); color: var(--button-text); background: var(--button-bg); }
+.settings-divider { height: 1px; margin: 17px 0 14px; background: var(--line); }
+.settings-section-title { margin: 0 0 10px; font-size: 12px; font-weight: 500; }
+.settings-auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.settings-auth-tabs button { min-height: 34px; border: 1px solid var(--line); color: var(--muted); background: transparent; font-size: 10px; }
+.settings-auth-tabs button.is-active { border-color: var(--button-bg); color: var(--button-text); background: var(--button-bg); }
+.settings-auth-form { display: grid; gap: 10px; margin-top: 12px; }
+.settings-auth-form label { display: grid; gap: 6px; color: var(--muted); font-size: 10px; }
+.settings-auth-form input { width: 100%; height: 37px; padding: 0 9px; border: 1px solid var(--line); border-radius: 0; outline: 0; color: var(--text); background: var(--panel); font: inherit; font-size: 11px; }
+.settings-auth-form input:focus { border-color: var(--line-strong); }
+.settings-auth-submit { min-height: 38px; padding: 0 12px; border: 1px solid var(--button-bg); color: var(--button-text); background: var(--button-bg); font-size: 10px; }
+.settings-auth-submit:disabled { cursor: wait; opacity: .65; }
+.settings-auth-submit--secondary { width: 100%; margin-top: 5px; border-color: var(--line-strong); color: var(--text); background: transparent; }
+.settings-auth-message { margin: 0; color: var(--text); font-size: 10px; line-height: 1.45; }
+.settings-local-note { margin: 0; color: var(--quiet); font-size: 9px; line-height: 1.5; }
+.settings-account { display: grid; gap: 10px; }
+.settings-account__name { margin: 0; color: var(--muted); font-size: 11px; }
+.settings-account__name strong { color: var(--text); font-weight: 600; }
 .bottom-nav { position: fixed; right: auto; bottom: 18px; left: 50%; z-index: 8; display: flex; gap: 4px; padding: 6px; border: 1px solid var(--line-strong); border-radius: 4px; background: color-mix(in srgb, var(--panel-raised) 94%, transparent); box-shadow: 0 10px 35px rgba(0,0,0,.3); backdrop-filter: blur(18px); transform: translateX(-50%); }
 .bottom-nav__button { min-width: 118px; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 13px; border: 0; border-radius: 2px; color: var(--muted); background: transparent; font-size: 10px; transition: color .18s ease, background .18s ease; }
 .bottom-nav__button:hover, .bottom-nav__button.is-active { color: var(--text); background: var(--panel); }
