@@ -318,6 +318,39 @@ function readStorage(key, fallback, legacyKey) {
   }
 }
 
+const passwordIterations = 600_000;
+const normalizeUsername = (username) => username.trim().toLocaleLowerCase('ru');
+
+function bytesToHex(bytes) {
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function hexToBytes(hex) {
+  return new Uint8Array(hex.match(/.{2}/g).map((byte) => Number.parseInt(byte, 16)));
+}
+
+async function hashPassword(password, salt) {
+  const keyMaterial = await window.crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await window.crypto.subtle.deriveBits({
+    name: 'PBKDF2',
+    salt: hexToBytes(salt),
+    iterations: passwordIterations,
+    hash: 'SHA-256',
+  }, keyMaterial, 256);
+  return bytesToHex(new Uint8Array(bits));
+}
+
+function readLocalUser() {
+  try {
+    const session = JSON.parse(localStorage.getItem('zverturet:session') || 'null');
+    if (!session?.username) return null;
+    const account = readStorage('zverturet:accounts', []).find((item) => normalizeUsername(item.username) === normalizeUsername(session.username));
+    return account ? { username: account.username } : null;
+  } catch {
+    return null;
+  }
+}
+
 function Brand({ footer = false }) {
   return <a className={`brand ${footer ? 'brand--footer' : ''}`} href="#top" aria-label="ZVERTURET — главная">
     <img className="brand__icon" src={mark} alt="" />
@@ -333,6 +366,13 @@ function App() {
     try { return localStorage.getItem('zverturet:theme') === 'light' ? 'light' : 'dark'; }
     catch { return 'dark'; }
   });
+  const [currentUser, setCurrentUser] = useState(() => readLocalUser());
+  const [authMode, setAuthMode] = useState('login');
+  const [authUsername, setAuthUsername] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authPasswordConfirm, setAuthPasswordConfirm] = useState('');
+  const [authMessage, setAuthMessage] = useState('');
+  const [authBusy, setAuthBusy] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [category, setCategory] = useState('Все');
   const [upcomingYear, setUpcomingYear] = useState('Все');
@@ -424,6 +464,81 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  async function submitAuth(event) {
+    event.preventDefault();
+    setAuthMessage('');
+    const username = authUsername.trim();
+    const usernameKey = normalizeUsername(username);
+
+    if (!/^[\p{L}\p{N}_.-]{3,32}$/u.test(username)) {
+      setAuthMessage('Логин: от 3 до 32 букв, цифр или символов . _ -');
+      return;
+    }
+    if (authPassword.length < 8) {
+      setAuthMessage('Пароль должен быть не короче 8 символов');
+      return;
+    }
+    if (authMode === 'register' && authPassword !== authPasswordConfirm) {
+      setAuthMessage('Пароли не совпадают');
+      return;
+    }
+    if (!window.crypto?.subtle) {
+      setAuthMessage('В этом браузере недоступно безопасное создание пароля');
+      return;
+    }
+
+    setAuthBusy(true);
+    try {
+      const accounts = readStorage('zverturet:accounts', []);
+      const account = accounts.find((item) => normalizeUsername(item.username) === usernameKey);
+
+      if (authMode === 'register') {
+        if (account) {
+          setAuthMessage('Такой логин уже занят');
+          return;
+        }
+        const salt = bytesToHex(window.crypto.getRandomValues(new Uint8Array(16)));
+        const passwordHash = await hashPassword(authPassword, salt);
+        const newAccount = { username, salt, passwordHash };
+        localStorage.setItem('zverturet:accounts', JSON.stringify([...accounts, newAccount]));
+        localStorage.setItem('zverturet:session', JSON.stringify({ username }));
+        setCurrentUser({ username });
+        setAuthUsername('');
+        setAuthPassword('');
+        setAuthPasswordConfirm('');
+        setAuthMessage('Аккаунт создан');
+        return;
+      }
+
+      if (!account) {
+        setAuthMessage('Неверный логин или пароль');
+        return;
+      }
+      const passwordHash = await hashPassword(authPassword, account.salt);
+      if (passwordHash !== account.passwordHash) {
+        setAuthMessage('Неверный логин или пароль');
+        return;
+      }
+      localStorage.setItem('zverturet:session', JSON.stringify({ username: account.username }));
+      setCurrentUser({ username: account.username });
+      setAuthUsername('');
+      setAuthPassword('');
+      setAuthPasswordConfirm('');
+      setAuthMessage('Вход выполнен');
+    } catch {
+      setAuthMessage('Не удалось сохранить аккаунт в этом браузере');
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
+  function signOut() {
+    localStorage.removeItem('zverturet:session');
+    setCurrentUser(null);
+    setAuthMode('login');
+    setAuthMessage('Вы вышли из аккаунта');
+  }
+
   const sectionTitle = activeTab === 'saved' ? 'Избранное' : activeTab === 'tickets' ? 'Билеты' : activeTab === 'upcoming' ? 'Скоро в кино' : 'Фильмы';
 
   return (
@@ -441,6 +556,33 @@ function App() {
               <button className={theme === 'light' ? 'theme-option is-active' : 'theme-option'} aria-pressed={theme === 'light'} onClick={() => setTheme('light')}><Sun size={15} /> Светлая</button>
               <button className={theme === 'dark' ? 'theme-option is-active' : 'theme-option'} aria-pressed={theme === 'dark'} onClick={() => setTheme('dark')}><Moon size={15} /> Тёмная</button>
             </div>
+            <div className="settings-divider" />
+            <h3 className="settings-section-title">Аккаунт</h3>
+            {currentUser ? <div className="settings-account">
+              <p className="settings-account__name">Вы вошли как <strong>{currentUser.username}</strong></p>
+              {authMessage && <p className="settings-auth-message" role="status">{authMessage}</p>}
+              <p className="settings-local-note">Локальный профиль хранится в этом браузере и не синхронизируется с другими устройствами. Не используйте пароль от других сайтов.</p>
+              <button className="settings-auth-submit settings-auth-submit--secondary" onClick={signOut}>Выйти</button>
+            </div> : <>
+              <div className="settings-auth-tabs" role="group" aria-label="Вход или регистрация">
+                <button type="button" aria-pressed={authMode === 'login'} className={authMode === 'login' ? 'is-active' : ''} onClick={() => { setAuthMode('login'); setAuthMessage(''); }}>Вход</button>
+                <button type="button" aria-pressed={authMode === 'register'} className={authMode === 'register' ? 'is-active' : ''} onClick={() => { setAuthMode('register'); setAuthMessage(''); }}>Регистрация</button>
+              </div>
+              <form className="settings-auth-form" onSubmit={submitAuth}>
+                <label>Логин
+                  <input value={authUsername} onChange={(event) => setAuthUsername(event.target.value)} autoComplete="username" maxLength={32} required />
+                </label>
+                <label>Пароль
+                  <input type="password" value={authPassword} onChange={(event) => setAuthPassword(event.target.value)} autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} minLength={8} required />
+                </label>
+                {authMode === 'register' && <label>Повторите пароль
+                  <input type="password" value={authPasswordConfirm} onChange={(event) => setAuthPasswordConfirm(event.target.value)} autoComplete="new-password" minLength={8} required />
+                </label>}
+                <button className="settings-auth-submit" type="submit" disabled={authBusy}>{authBusy ? 'Подождите…' : authMode === 'register' ? 'Создать аккаунт' : 'Войти'}</button>
+                {authMessage && <p className="settings-auth-message" role="status">{authMessage}</p>}
+                <p className="settings-local-note">Профиль сохраняется в этом браузере и не синхронизируется. Не используйте пароль от других сайтов.</p>
+              </form>
+            </>}
           </section>}
         </div>
       </header>
